@@ -29,12 +29,9 @@ btnSave.on('click', () => {
         name, contact, address
     };
 
-    /* Todo: Send a request to the server to save the customer */
 
-    /* 1. Create xhr object */
     const xhr = new XMLHttpRequest();
 
-    /* 2. Set an event listener to listen readystatechange */
     xhr.addEventListener('readystatechange', ()=> {
         if (xhr.readyState === 4){
             [txtName, txtAddress, txtContact, btnSave].forEach(elm => elm.removeAttr('disabled'));
@@ -52,15 +49,12 @@ btnSave.on('click', () => {
         }
     });
 
-    /* 3. Let's open the request */
     xhr.open('POST', 'http://localhost:8080/pos/customers', true);
 
-    /* 4. Let's set some request headers */
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     showProgress(xhr);
 
-    /* 5. Okay, time to send the request */
     xhr.send(JSON.stringify(customer));
 
     [txtName, txtAddress, txtContact, btnSave].forEach(elm => elm.attr('disabled', 'true'));
@@ -219,33 +213,24 @@ function showProgress(xhr){
 }
 
 tbodyElm.on('click', ".delete", (eventData)=> {
-    /* XHR -> jQuery AJAX */
     const id = +$(eventData.target).parents("tr").children("td:first-child").text().replace('C', '');
     const xhr = new XMLHttpRequest();
-    const jqxhr = $.ajax(`http://localhost:8080/pos/customers/${id}`, {
-        method: 'DELETE',
-        xhr: ()=> xhr           // This is a hack to obtain the xhr that is used by jquery
-    });
+    xhr.open('DELETE', `http://localhost:8080/pos/customers/${id}`, true);
+    xhr.send();
+    // const jqxhr = $.ajax(`http://localhost:8080/pos/customers/${id}`, {
+    //     method: 'DELETE',
+    //     xhr: ()=> xhr           // This is a hack to obtain the xhr that is used by jquery
+    // });
     showProgress(xhr);
-    jqxhr.done(()=> {
-        showToast('success', 'Deleted', 'Customer has been deleted successfully');
-        $(eventData.target).tooltip('dispose');
-        getCustomers();
-    });
-    jqxhr.fail(()=> {
-        showToast('error', 'Failed', "Failed to delete the customer, try again!");
+    xhr.addEventListener('readystatechange', ()=> {
+        if (xhr.readyState === 4){
+            if (xhr.status === 204){
+                getCustomers();
+                showToast('success', 'Deleted', 'Customer has been deleted successfully');
+            }else{
+                showToast('error', 'Failed', "Failed to delete the customer, try again!");
+            }
+        }
     });
 
-    /*
-    *   const jqxhr = $.ajax(url, {
-    *               method: 'GET',
-    *               contentType: 'application/json',
-    *               data: 'Request Body'
-    *           });
-    *
-    *   jqxhr.done((response, status)=> {});
-    *   jqxhr.fail(()=> {});
-    *   jqxhr.always(()=> {});
-    *
-    * */
 });
