@@ -2,15 +2,17 @@
 import {DateTimeFormatter, LocalDateTime} from '../node_modules/@js-joda/core/dist/js-joda.esm.js';
 
 /* Module Level Variables, Constants */
-const API_BASE_URL = 'http://localhost:8080/pos';
+const REST_API_BASE_URL = 'http://localhost:8080/pos';
+const WS_API_BASE_URL = 'http://localhost:8080/pos';
 const orderDateTimeElm = $("#order-date-time");
 const tbodyElm = $("#tbl-order tbody");
 const txtCustomer = $("#txt-customer");
 let customer = null;
-
+let socket=null
 /* Initialization Logic */
 setDateTime();
 tbodyElm.empty();
+socket =new WebSocket(`${WS_API_BASE_URL}/customers-ws`);
 
 /* Event Handlers & Timers */
 setInterval(setDateTime, 1000);
@@ -40,13 +42,7 @@ function findCustomer() {
 
     txtCustomer.removeClass("is-invalid");
     if (!idOrContact) return;
-    const jqxhr = $.ajax(`${API_BASE_URL}/customers/${idOrContact}`);
-    jqxhr.done((data)=>{
-        customer = data;
-        customerNameElm.text(customer.name);
-    });
-    jqxhr.fail(()=>{
-        customer = null;
-        customerNameElm.text("Walk-in Customer");
-    });
+    customer = null;
+    customerNameElm.text("Walk-in Customer");
+    if (socket.readyState === socket.OPEN) socket.send(idOrContact);
 }
