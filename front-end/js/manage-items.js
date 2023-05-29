@@ -225,7 +225,7 @@ tbodyElm.on('click', ".delete", (eventData)=> {
     const xhr = new XMLHttpRequest();
     const jqxhr = $.ajax(`http://localhost:8080/pos/items/${id}`, {
         method: 'DELETE',
-        xhr: ()=> xhr           // This is a hack to obtain the xhr that is used by jquery
+        xhr: ()=> xhr
     });
     showProgress(xhr);
     jqxhr.done(()=> {
@@ -236,17 +236,4 @@ tbodyElm.on('click', ".delete", (eventData)=> {
     jqxhr.fail(()=> {
         showToast('error', 'Failed', "Failed to delete the item, try again!");
     });
-
-    /*
-    *   const jqxhr = $.ajax(url, {
-    *               method: 'GET',
-    *               contentType: 'application/json',
-    *               data: 'Request Body'
-    *           });
-    *
-    *   jqxhr.done((response, status)=> {});
-    *   jqxhr.fail(()=> {});
-    *   jqxhr.always(()=> {});
-    *
-    * */
 });

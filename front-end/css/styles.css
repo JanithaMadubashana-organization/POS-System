@@ -64,7 +64,6 @@ main {
         transform: rotate(360deg);
     }
 }
-
 #progress-bar {
     position: fixed;
     left: 0;

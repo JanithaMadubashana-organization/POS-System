@@ -217,10 +217,7 @@ tbodyElm.on('click', ".delete", (eventData)=> {
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', `http://localhost:8080/pos/customers/${id}`, true);
     xhr.send();
-    // const jqxhr = $.ajax(`http://localhost:8080/pos/customers/${id}`, {
-    //     method: 'DELETE',
-    //     xhr: ()=> xhr           // This is a hack to obtain the xhr that is used by jquery
-    // });
+
     showProgress(xhr);
     xhr.addEventListener('readystatechange', ()=> {
         if (xhr.readyState === 4){
