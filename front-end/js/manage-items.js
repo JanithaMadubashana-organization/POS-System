@@ -34,7 +34,7 @@ btnSave.on('click', () => {
     const initialStock = txtInitialStock.val().trim();
 
     let item = {
-        description, unitPrice, initialStock
+        code,description, unitPrice, initialStock
     };
 
     /* Todo: Send a request to the server to save the customer */
@@ -45,7 +45,7 @@ btnSave.on('click', () => {
     /* 2. Set an event listener to listen readystatechange */
     xhr.addEventListener('readystatechange', ()=> {
         if (xhr.readyState === 4){
-            [txtDescription, txtUnitPrice, txtInitialStock, btnSave].forEach(elm => elm.removeAttr('disabled'));
+            [txtCode,txtDescription, txtUnitPrice, txtInitialStock, btnSave].forEach(elm => elm.removeAttr('disabled'));
             $("#loader").css('visibility', 'hidden');
             if (xhr.status === 201){
                 item = JSON.parse(xhr.responseText);
@@ -69,7 +69,7 @@ btnSave.on('click', () => {
     /* 5. Okay, time to send the request */
     xhr.send(JSON.stringify(item));
 
-    [txtDescription, txtUnitPrice, txtInitialStock, btnSave].forEach(elm => elm.attr('disabled', 'true'));
+    [txtCode, txtUnitPrice, txtInitialStock, btnSave].forEach(elm => elm.attr('disabled', 'true'));
     $("#loader").css('visibility', 'visible');
 
 });
@@ -118,7 +118,7 @@ function resetForm(clearData) {
 
 modalElm.on('show.bs.modal', () => {
     resetForm(true);
-    txtCode.parent().hide();
+    // txtCode.parent().hide();
     setTimeout(() => txtDescription.trigger('focus'), 500);
 });
 
@@ -168,7 +168,7 @@ function getItems(){
                                         d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
                                 </svg>
                                 <svg data-bs-toggle="tooltip" data-bs-title="Delete Customer" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                    class="bi bi-trash" viewBox="0 0 16 16">
+                                    class="bi bi-trash delete"  viewBox="0 0 16 16">
                                     <path
                                         d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                                     <path
@@ -221,7 +221,7 @@ function showProgress(xhr){
 
 tbodyElm.on('click', ".delete", (eventData)=> {
     /* XHR -> jQuery AJAX */
-    const id = +$(eventData.target).parents("tr").children("td:first-child").text().replace('C', '');
+    const id = +$(eventData.target).parents("tr").children("td:first-child").text().replace('I', '');
     const xhr = new XMLHttpRequest();
     const jqxhr = $.ajax(`http://localhost:8080/pos/items/${id}`, {
         method: 'DELETE',
